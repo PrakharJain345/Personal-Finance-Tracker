@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-base: #0A0D14;
+  --color-surface: #111827;
+  --color-elevated: #1A2235;
+  --color-divider: #1F2A3D;
+  --color-accent: #4C6EF5;
+  --color-accent-hover: #6B8AF7;
+  --color-income: #10B981;
+  --color-expense: #EF4444;
+  --color-text-main: #F9FAFB;
+  --color-text-sec: #9CA3AF;
+  --color-text-mut: #4B5563;
+  --font-inter: "Inter", sans-serif;
+  --font-caveat: "Caveat", cursive;
+}
+
+:root {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-main);
+}
+
+.bg-dot-pattern {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+body {
+  font-family: var(--font-inter);
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-enter { animation: fadeSlideUp 0.4s ease-out forwards; opacity: 0; }
+.delay-1 { animation-delay: 0.05s; opacity: 0; }
+.delay-2 { animation-delay: 0.10s; opacity: 0; }
+.delay-3 { animation-delay: 0.15s; opacity: 0; }
+.delay-4 { animation-delay: 0.20s; opacity: 0; }
+
+/* Smooth scrollbar */
+* { scrollbar-width: thin; scrollbar-color: #1F2A3D #0A0D14; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0A0D14; }
+::-webkit-scrollbar-thumb { background: #1F2A3D; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #4C6EF5; }
+
+/* Date input style fix */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+  cursor: pointer;
+}
+
+/* Select arrow */
+select option { background: #111827; }
+
+.orb {
+  position: fixed;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, #4c6ef530 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: float 8s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(-10%, -10%); }
+  50%       { transform: translate(10%, 10%); }
+}
+
+@keyframes modalEnter {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-modal { animation: modalEnter 0.2s ease-out forwards; }
