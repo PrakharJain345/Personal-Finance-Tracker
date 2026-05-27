@@ -1,171 +1,160 @@
-# 💰 Personal Finance Tracker
 
-A web-based personal finance tracker where users can record income and expenses, categorize transactions, and monitor their spending through an intuitive dashboard.
+# 💰 FinTrack — Personal Finance Tracker
 
-Built as part of the Jaypee Brothers Medical Publishers SDE Intern Assessment.
-
----
-
-## 🌐 Live Demo
-[Click here to view the live app](YOUR_VERCEL_URL_HERE)
+FinTrack is a high-performance, responsive single-page web application designed for personal expense management and budget tracking. Built using the **Next.js 16 App Router**, **Tailwind CSS**, and **Supabase (PostgreSQL)**, it delivers zero-latency operations through an Optimistic UI state pipeline, custom vector analytics rendering, and a state-of-the-art dark theme aesthetic.
 
 ---
 
-## 📁 GitHub Repository
-[Click here to view the repository](YOUR_GITHUB_REPO_URL_HERE)
+## 🔗 Key Links
+
+* **GitHub Repository:** [https://github.com/PrakharJain345/Personal-Finance-Tracker](https://github.com/PrakharJain345/Personal-Finance-Tracker)
+* **Live Deployment:** _(Add your Vercel deployment URL here after importing the project to Vercel)_
 
 ---
 
-## ✅ Features Implemented
+## 🚀 Key Architectural Features
 
-### Authentication
-- User registration with email and password
-- User login and logout
-- Session persistence across page refreshes
-- Protected routes — unauthenticated users are redirected to login
+### 1. High-Performance Optimistic UI
+FinTrack implements an advanced, local state management system inside a unified data hook (`useTransactions.ts`). All transaction additions, modifications, and deletions occur **instantly** in the UI, updating summary cards, charts, and table rows before the server-side database confirms the query. This removes latency and ensures a fluid user experience.
 
-### Transaction Management
-- Add income and expense transactions
-- Edit existing transactions
-- Delete transactions with confirmation prompt
-- Each transaction includes: type, amount, category, description, and date
+### 2. Next.js 16 Route Guard & Session Security
+Utilizes a centralized route proxy (`proxy.ts`) cooperating with server-side SDK middleware to handle live session tokens. Unauthenticated users attempting to access dashboard panels are immediately intercepted and directed to credentials panels, securing all proprietary layout trees.
 
-### Categories
-- Predefined income categories: Salary, Freelance, Investment, Gift, Other
-- Predefined expense categories: Food & Dining, Transport, Shopping, Health, Entertainment, Rent, Utilities, Education, Other
-- Category badges displayed on each transaction
+### 3. Multi-Tenant Row Level Security (RLS)
+The database structure is built on Supabase PostgreSQL with **Row Level Security (RLS)** fully active. A strict RLS security policy restricts queries so that authenticated users are only authorized to read, create, modify, or delete entries matching their own unique `user_id`, guaranteeing full data isolation.
 
-### Expense Summary Dashboard
-- Total Balance card (Income − Expenses)
-- Total Income card
-- Total Expenses card
-- Pie/Bar chart: Spending breakdown by category
-- Line/Bar chart: Income vs Expenses over last 30 days
-- Recent 5 transactions preview
-
-### Search and Filters
-- Search transactions by description keyword
-- Filter by transaction type (All / Income / Expense)
-- Filter by category
-- Filter by date range (from date to date)
-- All filters work simultaneously
-- Clear all filters button
+### 4. Bespoke Visual Design & Aurora Backgrounds
+Features a modern dark-mode design system with responsive visual indicators:
+* **Blended Aurora Mesh:** A layered dark backdrop (`bg-gradient-to-b from-[#0B0F19] via-[#0A0D14] to-[#0D0914]`) combined with floating, slow-pulsing radial glow spheres for deep visual immersion.
+* **Vector Graphic Category Badges:** Emojis are replaced by highly polished Lucide SVG React components that scale flawlessly and dynamically match category colors.
+* **Sleek Input Controls:** Elegant password masks (`••••••••••••`) and clean minimal email inputs (`example@fintrack.com`) with high-contrast text rendering.
+* **Asymmetry-Free Layout Centering:** Uses absolute viewport calculations to center all menu navigation links exactly in the midpoint of the screen, regardless of logo and profile widths.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Complete Technology Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js 14 (App Router) |
-| Styling | Tailwind CSS |
-| Backend & Database | Supabase (PostgreSQL) |
-| Authentication | Supabase Auth |
-| Charts | Recharts |
-| Deployment | Vercel |
+| Layer | Technology | Purpose |
+|---|---|---|
+| **Core Architecture** | Next.js 16.2.6 (App Router) | High-speed production framework with SSR and Route Proxy capabilities |
+| **Styling & Theme** | Tailwind CSS v4 | Custom `@theme` variables for layout tokens, dark utility configurations |
+| **Animation Pipeline** | Framer Motion | Smooth keyframe timelines, staggered transitions, interactive sliders |
+| **Database & Engine** | Supabase (PostgreSQL) | Structured database tables with strict relationship columns |
+| **Authentication** | Supabase Auth SDK | Enterprise credential authentication, secure sessions |
+| **Analytics & Data** | Recharts | Responsive cashflow coordinate bars, detailed spending slices |
+| **Development Tooling** | TypeScript | Strong typing, structural interface compiling |
 
 ---
 
-## 🚀 Project Setup Instructions
+## 📋 Comprehensive Database Schema
 
-### Prerequisites
-- Node.js 18+ installed
-- A [Supabase](https://supabase.com) account (free)
-- A [Vercel](https://vercel.com) account (free)
+To initialize the database, execute the following SQL script in your Supabase **SQL Editor** to create the `transactions` table, establish reference keys, and activate security models:
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/YOUR_USERNAME/personal-finance-tracker.git
-cd personal-finance-tracker
+```sql
+-- Create the transactions tracking table
+create table transactions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade not null,
+  type text check (type in ('income', 'expense')) not null,
+  amount numeric(12, 2) not null check (amount >= 0),
+  category text not null,
+  description text,
+  date date not null,
+  created_at timestamptz default now() not null
+);
+
+-- Enable strict Row Level Security (RLS)
+alter table transactions enable row level security;
+
+-- Authorize authenticated database tenants to perform CRUD operations solely on matching rows
+create policy "Users can only access their own transactions"
+on transactions for all
+to authenticated
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
 ```
 
-### 2. Install Dependencies
+---
+
+## 📂 Project Directory Structure
+
+```
+finance-tracker/
+├── app/
+│   ├── dashboard/           # Summary cards, Recharts, recent feeds
+│   │   └── page.tsx
+│   ├── transactions/        # Fully searchable list, stacked date range filters
+│   │   └── page.tsx
+│   ├── login/               # Premium enlarged auth card, custom auroras
+│   │   └── page.tsx
+│   ├── signup/              # Signup interface page
+│   │   └── page.tsx
+│   ├── globals.css          # Tailwind variables, floating auroras, keyframes
+│   ├── layout.tsx           # Exposes Google Fonts, Toasters, layout wrappers
+│   └── page.tsx             # Central route redirect helper
+├── components/
+│   ├── ui/                  # Badge, Button, Card, Input, Modal (design system)
+│   ├── layout/              # Sidebar, Topbar (dynamic profile and red logout)
+│   ├── dashboard/           # BalanceCard, SummaryCards, Recharts wrappers
+│   └── transactions/        # FilterBar, TransactionRow UI elements
+├── hooks/
+│   └── useTransactions.ts   # Optimistic CRUD database actions hook
+├── lib/
+│   └── utils.ts             # Lucide SVG Category configurations
+├── utils/supabase/
+│   ├── client.ts            # Client-side Supabase client
+│   ├── server.ts            # Server-side SSR Supabase client
+│   └── middleware.ts        # Next.js session middleware helper
+├── proxy.ts                 # Next.js 16 centralized route guard
+├── .env.local.example       # Example database connection variables
+└── package.json             # Core scripts and dependencies mapping
+```
+
+---
+
+## 🚀 Step-by-Step Setup Instructions
+
+### 1. Clone the Source Code
+```bash
+git clone https://github.com/PrakharJain345/Personal-Finance-Tracker.git
+cd Personal-Finance-Tracker/finance-tracker
+```
+
+### 2. Configure Environment Variables
+Copy the connection placeholder variables into a local credentials file:
+```bash
+cp .env.local.example .env.local
+```
+Open `.env.local` and add your unique Supabase Project credentials (retrieved from **Settings → API**):
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-public-key
+```
+
+### 3. Install NPM Packages
+Download and compile the structural dependencies:
 ```bash
 npm install
 ```
 
-### 3. Set Up Supabase
-
-1. Go to [supabase.com](https://supabase.com) and create a new project
-2. Go to the **SQL Editor** in your Supabase dashboard
-3. Run the following SQL to create the transactions table:
-
-```sql
-create table transactions (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references auth.users(id) on delete cascade,
-  type text check (type in ('income', 'expense')) not null,
-  amount numeric not null,
-  category text not null,
-  description text,
-  date date not null,
-  created_at timestamptz default now()
-);
-
-alter table transactions enable row level security;
-
-create policy "Users can only access their own transactions"
-on transactions for all
-using (auth.uid() = user_id);
-```
-
-4. Go to **Project Settings → API** and copy your `Project URL` and `anon public` key
-
-### 4. Configure Environment Variables
-
-Create a `.env.local` file in the root of the project:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-> ⚠️ Never commit `.env.local` to GitHub. It is already listed in `.gitignore`.
-
-### 5. Run Locally
+### 4. Run Development Server
+Boot up the fast local development server:
 ```bash
 npm run dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### 6. Deploy to Vercel
-
-1. Push your code to a public GitHub repository
-2. Go to [vercel.com](https://vercel.com) → Import your GitHub repo
-3. Add the same environment variables (`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`) in Vercel project settings
-4. Click Deploy — Vercel will give you a live URL
+Open [http://localhost:3000](http://localhost:3000) in your browser to start tracking.
 
 ---
 
-## 📂 Project Structure
-
-```
-/app
-  /login          → Login page
-  /signup         → Signup page
-  /dashboard      → Summary cards + charts + recent transactions
-  /transactions   → Full transaction list with filters
-  /components     → Reusable UI components
-  /lib            → Supabase client setup
-/public           → Static assets
-.env.local        → Environment variables (not committed)
-```
-
----
-
-## 🔒 Security
-- Row Level Security (RLS) enabled on Supabase — users can only access their own data
-- No API keys or credentials are hardcoded or committed to the repository
-- Environment variables used for all sensitive configuration
-
----
-
-## 📸 Screenshots
-_(Add screenshots of your dashboard, transactions page, and login page here)_
+## 🔒 Security Compliance
+* **RLS Enforced:** Database permissions ensure no user can intercept another's transactions.
+* **Excluded Credentials:** Sensitive keys, `.env.local`, and build dumps are explicitly excluded from GitHub via structured root `.gitignore` files.
+* **Client-Side Sanitation:** All inputs are parsed, currency formats sanitized, and transaction boundaries securely compiled.
 
 ---
 
 ## 👤 Author
-Your Name  
-[GitHub](https://github.com/YOUR_USERNAME)
+
+**Prakhar Jain**
+* **GitHub:** [@PrakharJain345](https://github.com/PrakharJain345)
+* **Project Repository:** [Personal Finance Tracker](https://github.com/PrakharJain345/Personal-Finance-Tracker)
