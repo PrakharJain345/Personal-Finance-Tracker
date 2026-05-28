@@ -1,5 +1,5 @@
 
-# 💰 FinTrack — Personal Finance Tracker
+#  FinTrack — Personal Finance Tracker
 
 FinTrack is a high-performance, responsive single-page web application designed for personal expense management and budget tracking. Built using the **Next.js 16 App Router**, **Tailwind CSS**, and **Supabase (PostgreSQL)**, it delivers zero-latency operations through an Optimistic UI state pipeline, custom vector analytics rendering, and a state-of-the-art dark theme aesthetic.
 
@@ -8,11 +8,11 @@ FinTrack is a high-performance, responsive single-page web application designed 
 ## 🔗 Key Links
 
 * **GitHub Repository:** [https://github.com/PrakharJain345/Personal-Finance-Tracker](https://github.com/PrakharJain345/Personal-Finance-Tracker)
-* **Live Deployment:** _(Add your Vercel deployment URL here after importing the project to Vercel)_
+* **Live Deployment:** [https://personal-finance-tracker-brown-chi.vercel.app](https://personal-finance-tracker-brown-chi.vercel.app)
 
 ---
 
-## 🚀 Key Architectural Features
+##  Key Architectural Features
 
 ### 1. High-Performance Optimistic UI
 FinTrack implements an advanced, local state management system inside a unified data hook (`useTransactions.ts`). All transaction additions, modifications, and deletions occur **instantly** in the UI, updating summary cards, charts, and table rows before the server-side database confirms the query. This removes latency and ensures a fluid user experience.
@@ -32,7 +32,43 @@ Features a modern dark-mode design system with responsive visual indicators:
 
 ---
 
-## 🛠️ Complete Technology Stack
+## ✅ Core App Features Implemented
+
+### 1. User Authentication & Security
+* **Session Persistence:** Exposes secure token storage for persistent login states across page refreshes.
+* **Route Guards:** Centralized path interception redirects unauthenticated users away from restricted workspace screens.
+* **Multi-Tenant RLS:** Strict database filters prevent cross-user account records leakage.
+
+### 2. Transaction CRUD Operations
+* **Add Transaction:** Allows creating income or expense records with amount, category, date, and description parameters.
+* **Edit Transaction:** Highly responsive forms pre-fill details for secure edits.
+* **Double-Confirmation Deletion:** Features local checkmark confirmations to protect against accidental transaction deletions.
+
+### 3. Expense Summary Dashboard
+* **Dynamic Net Balance Widget:** Instantly computes Total Income minus Total Expenses.
+* **Analytical Recharts Integration:** Exposes an interactive coordinate cashflow bar chart and a category spending pie breakdown.
+* **Recent Feeds Preview:** Summarizes your top 5 recent financial transactions.
+
+### 4. Database Searching & Multivariable Filtering
+* **Keyword Database Search:** Instantly filters listings matching description or category keywords.
+* **Multivariable Filters:** Allows filtering by type (Income vs Expense) and category dropdowns simultaneously.
+* **Date Range Pickers:** Restricts lists exactly between "From" and "To" boundaries.
+* **One-Click Clear Button:** Instantly resets all parameters and returns full lists.
+
+---
+
+##  Premium Assessment Enhancements
+Beyond the mandatory specifications, we have implemented the following high-end developer upgrades:
+1. **Optimistic UI Data Hook:** Immediate, latency-free updates in visual charts and tables during CRUD edits before server roundtrips resolve.
+2. **Dashboard Quick Management:** Allows full editing and deleting of transactions directly inside the Dashboard recent transactions widget, bypassing the need to change views.
+3. **Pulsing Aurora Ambient Mesh:** Soft-glowing radial spheres that animate slowly in the background to provide a three-dimensional visual atmosphere.
+4. **Custom Vector SVG Category Badges:** Clean Lucide React stroke graphics mapped dynamically to transaction categories, eliminating browser-dependent emoji designs.
+5. **Real-Time Profile Avatar Extraction:** Dynamically extracts the active database email and splits it into a localized capitalized name with custom-gradient avatar initials.
+6. **High-Contrast Minimal Inputs:** Exposes simple, neat inputs styled with masked bullet placeholders (`••••••••••••`) and a precise `example@fintrack.com` format.
+
+---
+
+##  Complete Technology Stack
 
 | Layer | Technology | Purpose |
 |---|---|---|
@@ -112,7 +148,7 @@ finance-tracker/
 
 ---
 
-## 🚀 Step-by-Step Setup Instructions
+##  Step-by-Step Setup Instructions
 
 ### 1. Clone the Source Code
 ```bash
@@ -146,7 +182,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to start tra
 
 ---
 
-## 🔒 Security Compliance
+##  Security Compliance
 * **RLS Enforced:** Database permissions ensure no user can intercept another's transactions.
 * **Excluded Credentials:** Sensitive keys, `.env.local`, and build dumps are explicitly excluded from GitHub via structured root `.gitignore` files.
 * **Client-Side Sanitation:** All inputs are parsed, currency formats sanitized, and transaction boundaries securely compiled.
