@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="36" x2="36" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4C6EF5"/>
+      <stop offset="100%" stop-color="#2DD4BF"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded square background matching the app logo -->
+  <rect width="36" height="36" rx="9" fill="url(#bg)"/>
+  <!-- TrendingUp arrow: line going up-right then arrow head -->
+  <polyline points="5,26 13,17 19,22 31,10" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <polyline points="24,10 31,10 31,17" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

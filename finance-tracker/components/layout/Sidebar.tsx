@@ -40,7 +40,7 @@ export default function Sidebar({ email }: SidebarProps) {
       <aside className="hidden md:flex flex-col fixed top-0 left-0 h-full w-60 bg-[#0D1117] border-r border-[#1F2A3D] z-40 xl:w-60 lg:w-60 md:w-16">
         {/* Logo */}
         <div className="flex items-center gap-3 px-5 py-5 border-b border-[#1F2A3D]">
-          <div className="w-9 h-9 rounded-xl bg-[#4C6EF5] flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#4C6EF5] to-[#2DD4BF] flex items-center justify-center flex-shrink-0">
             <TrendingUp className="w-5 h-5 text-white" />
           </div>
           <span className="text-white font-semibold text-lg tracking-tight hidden lg:block">FinTrack</span>
