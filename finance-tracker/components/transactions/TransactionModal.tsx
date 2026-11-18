@@ -5,6 +5,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Transaction, NewTransaction } from "@/hooks/useTransactions";
+import toast from "react-hot-toast";
 
 const INCOME_CATEGORIES = ["Salary", "Freelance", "Investment", "Gift", "Other"];
 const EXPENSE_CATEGORIES = [
@@ -58,13 +59,25 @@ export default function TransactionModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!amount || !category || !date) return;
+    const parsedAmount = parseFloat(amount);
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      toast.error("Please enter a valid amount greater than 0");
+      return;
+    }
+    if (!category) {
+      toast.error("Please select a category");
+      return;
+    }
+    if (!date) {
+      toast.error("Please select a date");
+      return;
+    }
 
     onSubmit({
       type,
-      amount: parseFloat(amount),
+      amount: parsedAmount,
       category,
-      description: description || null,
+      description: description.trim() || null,
       date,
     });
     onClose();

@@ -10,7 +10,7 @@ import TransactionRow from "@/components/transactions/TransactionRow";
 import TransactionModal from "@/components/transactions/TransactionModal";
 import { useTransactions, Transaction } from "@/hooks/useTransactions";
 import { Card } from "@/components/ui/Card";
-import { createClient } from "@/utils/supabase/client";
+import { getCurrentUser } from "@/utils/auth";
 import { Plus } from "lucide-react";
 
 export default function TransactionsPage() {
@@ -25,13 +25,19 @@ export default function TransactionsPage() {
     to: "",
   });
 
-  const { transactions, loading, addTransaction, updateTransaction, deleteTransaction } =
-    useTransactions();
+  const {
+    transactions,
+    loading,
+    isCloudMode,
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+    resetToSampleData,
+  } = useTransactions();
 
   useEffect(() => {
     async function fetchUser() {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = await getCurrentUser();
       if (user?.email) {
         setEmail(user.email);
       }
@@ -44,7 +50,8 @@ export default function TransactionsPage() {
       const matchSearch =
         !filters.search ||
         t.description?.toLowerCase().includes(filters.search.toLowerCase()) ||
-        t.category.toLowerCase().includes(filters.search.toLowerCase());
+        t.category.toLowerCase().includes(filters.search.toLowerCase()) ||
+        t.amount.toString().includes(filters.search);
       const matchType = filters.type === "all" || t.type === filters.type;
       const matchCategory =
         filters.category === "All Categories" || t.category === filters.category;
@@ -75,7 +82,12 @@ export default function TransactionsPage() {
 
   return (
     <AppLayout email={email}>
-      <Topbar title="Transactions" onAddTransaction={() => setModalOpen(true)} />
+      <Topbar
+        title="Transactions"
+        onAddTransaction={() => setModalOpen(true)}
+        isCloudMode={isCloudMode}
+        onResetData={resetToSampleData}
+      />
 
       <div className="p-4 md:p-6">
         <FilterBar onFilterChange={setFilters} />

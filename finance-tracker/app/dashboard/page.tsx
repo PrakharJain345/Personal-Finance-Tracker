@@ -12,7 +12,7 @@ import CategoryChart from "@/components/dashboard/CategoryChart";
 import RecentTransactions from "@/components/dashboard/RecentTransactions";
 import TransactionModal from "@/components/transactions/TransactionModal";
 import { useTransactions } from "@/hooks/useTransactions";
-import { createClient } from "@/utils/supabase/client";
+import { getCurrentUser } from "@/utils/auth";
 import { Plus } from "lucide-react";
 
 function getMonthlyStats(transactions: ReturnType<typeof useTransactions>["transactions"]) {
@@ -45,7 +45,15 @@ export default function DashboardPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editTransaction, setEditTransaction] = useState<any>(null);
   const [email, setEmail] = useState("");
-  const { transactions, loading, addTransaction, updateTransaction, deleteTransaction } = useTransactions();
+  const {
+    transactions,
+    loading,
+    isCloudMode,
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+    resetToSampleData,
+  } = useTransactions();
   const stats = getMonthlyStats(transactions);
 
   const openEdit = (t: any) => {
@@ -69,8 +77,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function fetchUser() {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = await getCurrentUser();
       if (user?.email) {
         setEmail(user.email);
       }
@@ -80,7 +87,12 @@ export default function DashboardPage() {
 
   return (
     <AppLayout email={email}>
-      <Topbar title="Dashboard" onAddTransaction={() => setModalOpen(true)} />
+      <Topbar
+        title="Dashboard"
+        onAddTransaction={() => setModalOpen(true)}
+        isCloudMode={isCloudMode}
+        onResetData={resetToSampleData}
+      />
 
       <div className="p-4 md:p-6 space-y-5">
         {loading ? (
@@ -104,7 +116,7 @@ export default function DashboardPage() {
             <SummaryCards
               income={stats.income}
               expense={stats.expense}
-              count={stats.currentCount}
+              count={transactions.length}
             />
 
             {/* Charts */}

@@ -44,7 +44,7 @@ export default function CategoryChart({ transactions }: CategoryChartProps) {
   const total = data.reduce((s, d) => s + d.value, 0);
 
   return (
-    <Card className="animate-enter delay-4 h-full" style={{ opacity: 0 }}>
+    <Card className="animate-enter delay-4 h-full">
       <h3 className="text-[#F9FAFB] font-semibold text-base mb-5">Spending by Category</h3>
       {data.length === 0 ? (
         <div className="flex items-center justify-center h-48 text-[#4B5563] text-sm">

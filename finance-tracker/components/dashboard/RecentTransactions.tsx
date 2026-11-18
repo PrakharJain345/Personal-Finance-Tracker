@@ -26,7 +26,7 @@ export default function RecentTransactions({ transactions, onEdit, onDelete }: R
     .slice(0, 5);
 
   return (
-    <Card className="animate-enter delay-4" style={{ opacity: 0 }}>
+    <Card className="animate-enter delay-4">
       <div className="flex items-center justify-between mb-5">
         <h3 className="text-[#F9FAFB] font-semibold text-base">Recent Transactions</h3>
         <div className="flex items-center gap-2">

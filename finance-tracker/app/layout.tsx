@@ -7,6 +7,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const caveat = Caveat({ subsets: ["latin"], variable: "--font-caveat" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://personal-finance-tracker-brown-chi.vercel.app"),
   title: "FinTrack — Personal Finance Tracker",
   description: "FinTrack helps you capture expenses instantly, visualize your cashflow, and hit your savings goals — free forever.",
   icons: {

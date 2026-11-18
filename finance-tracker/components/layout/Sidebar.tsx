@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, List, LogOut, TrendingUp } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { clearLocalSession } from "@/utils/auth";
 import toast from "react-hot-toast";
 import { useState } from "react";
 
@@ -23,15 +24,16 @@ export default function Sidebar({ email }: SidebarProps) {
 
   const handleLogout = async () => {
     setLoggingOut(true);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast.error("Logout failed");
-      setLoggingOut(false);
-    } else {
-      toast.success("Logged out");
-      router.push("/login");
+    clearLocalSession();
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch {
+      // ignore network failure
     }
+    toast.success("Logged out");
+    router.push("/login");
+    router.refresh();
   };
 
   return (

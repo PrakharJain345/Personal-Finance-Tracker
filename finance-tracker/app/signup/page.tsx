@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import { setLocalSession } from "@/utils/auth";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { TrendingUp, Eye, EyeOff } from "lucide-react";
+import { TrendingUp, Eye, EyeOff, Play } from "lucide-react";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -14,6 +15,13 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const handleDemoAccess = () => {
+    setLocalSession("demo@fintrack.com", true, false);
+    toast.success("Welcome to FinTrack Demo!");
+    router.push("/dashboard");
+    router.refresh();
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,15 +34,33 @@ export default function SignupPage() {
       return;
     }
     setLoading(true);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Account created! Check your email to confirm.");
-      router.push("/login");
+
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signUp({ email, password });
+
+      if (!error && data?.session) {
+        setLocalSession(email, false, false, data.user?.id);
+        toast.success("Account created successfully!");
+        router.push("/dashboard");
+        router.refresh();
+        return;
+      }
+
+      // If user created in Supabase (unconfirmed email) or local mode needed:
+      // Immediately activate session and redirect to dashboard
+      setLocalSession(email, false, true, data?.user?.id);
+      toast.success("Account created! Welcome to FinTrack.");
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      setLocalSession(email, false, true);
+      toast.success("Account created! Welcome to FinTrack.");
+      router.push("/dashboard");
+      router.refresh();
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -58,6 +84,22 @@ export default function SignupPage() {
           <p className="text-[#9CA3AF] text-sm mt-1">Create your account</p>
         </div>
         <div className="bg-[#111827] border border-[#1F2A3D] rounded-2xl shadow-2xl p-7 space-y-4">
+          <button
+            type="button"
+            onClick={handleDemoAccess}
+            className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl bg-[#1A2235] hover:bg-[#202B42] border border-[#2D3A54] hover:border-[#4C6EF5] text-white font-medium text-sm transition-all duration-200 shadow-md group"
+          >
+            <Play className="w-3.5 h-3.5 fill-current text-[#4C6EF5] group-hover:translate-x-0.5 transition-transform" />
+            <span>Explore Live Demo</span>
+            <span className="text-[10px] bg-[#4C6EF5]/20 border border-[#4C6EF5]/40 px-2 py-0.5 rounded-full text-[#93C5FD] font-semibold">1-Click</span>
+          </button>
+
+          <div className="flex items-center gap-3 my-2">
+            <div className="flex-1 h-px bg-[#1F2A3D]" />
+            <span className="text-[11px] uppercase tracking-wider text-[#6B7280]">or create credentials</span>
+            <div className="flex-1 h-px bg-[#1F2A3D]" />
+          </div>
+
           <form onSubmit={handleSignup} className="space-y-4">
             <div>
               <label htmlFor="signup-email" className="block text-sm font-medium text-[#9CA3AF] mb-1.5">

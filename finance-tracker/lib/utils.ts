@@ -28,6 +28,18 @@ export const formatCurrency = (amount: number) => {
 };
 
 export const formatDate = (dateString: string) => {
+  if (!dateString) return "";
+  const parts = dateString.split("-");
+  if (parts.length === 3) {
+    const [year, month, day] = parts.map(Number);
+    if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+      return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+  }
   return new Date(dateString).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
